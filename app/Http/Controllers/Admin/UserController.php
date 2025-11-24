@@ -1,8 +1,10 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -12,7 +14,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        $users = User::latest()->paginate(10);
+
+        return view('admin.users.index', compact('users'));
     }
 
     /**
@@ -20,7 +24,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.users.create');
     }
 
     /**
@@ -28,7 +32,25 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+   
+    $request->validate([
+        'name' => ['required', 'string', 'max:255'],
+        'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+        'role' => ['required', 'in:admin,staff,client'], 
+        'password' => ['required', 'confirmed', Rules\Password::defaults()], 
+        'password' => ['required', 'min:8'],
+    ]);
+
+   
+    User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'role' => $request->role,
+        'password' => Hash::make($request->password), 
+        'is_active' => true, 
+    ]);
+
+    return redirect()->route('admin.users.index')->with('success', 'Usuario creado exitosamente.');
     }
 
     /**
@@ -44,7 +66,7 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        return view('admin.users.edit', compact('user'));
     }
 
     /**
@@ -52,7 +74,7 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        
     }
 
     /**
