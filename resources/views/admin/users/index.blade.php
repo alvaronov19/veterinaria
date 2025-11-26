@@ -19,10 +19,13 @@
                     
                     {{-- Encabezado y Botón Crear --}}
                     <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-bold">Lista de Usuarios</h3>
-                        <a href="{{ route('admin.users.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                            + Nuevo Usuario
+                        <h3 class="text-lg font-bold text-gray-800">Lista de Usuarios</h3>
+                        
+                        @if(auth()->user()->role === 'admin')
+                        <a href="{{ route('admin.users.create') }}" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow" style="background-color: #2563eb; color: white;">
+                            + Crear Nuevo Usuario
                         </a>
+                        @endif
                     </div>
 
                     {{-- Tabla --}}
